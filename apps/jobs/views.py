@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
-from apps.users.permissons import IsOwnerOrReadOnly
+from apps.users.permissons import IsOwnerOrReadOnly,IsjobRecruiter
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import PermissionDenied
@@ -43,31 +43,23 @@ class ApplicationViewset(viewsets.ModelViewSet):
     filterset_fields = ['job','status','applicant']
     ordering_fields = ['applied_at']
     authentication_classes =[JWTAuthentication]
-    permission_classes =[IsAuthenticated]
+    permission_classes =[IsAuthenticated,IsjobRecruiter]
 
     def get_queryset(self):
-        user = self.request.user
-        profile = user.userprofile
-
-        if profile.role == 'Developer':
-            return Application.objects.filter(applicant=user)
-        
-        elif profile.role == 'Recruiter':
-            return Application.objects.filter(job__recruiter=user)
-        
-        elif profile.role == 'Admin':
-            return Application.objects.all()
-
-    def perform_create(self, serializer):
-        try:
-            profile = self.request.user.userprofile
-        except:
-            raise PermissionDenied("Profile does not exists.")
-        
-        if profile.role != 'Developer':
-            raise PermissionDenied("only developers can apply for the job.")
-        
-        serializer.save(applicant=self.request.user)
+     user = self.request.user
     
-
+     if user.is_superuser:                    
+        return Application.objects.all()
     
+     if not hasattr(user, 'userprofile'):     
+         return Application.objects.none()
+    
+     profile = user.userprofile               
+     if profile.role == 'Developer':
+        return Application.objects.filter(applicant=user)
+     elif profile.role == 'Recruiter':
+        return Application.objects.filter(job__recruiter=user)
+     elif profile.role == 'Admin':
+        return Application.objects.all()
+    
+     return Application.objects.none()

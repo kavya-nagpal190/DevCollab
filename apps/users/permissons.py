@@ -4,5 +4,16 @@ class IsOwnerOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
-        owner = getattr(obj, 'user', None) or getattr(obj, 'author', None) or getattr(obj, 'recruiter', None)
+        owner = getattr(obj, 'user', None) or getattr(obj, 'author', None) or getattr(obj, 'recruiter', None) or getattr(obj, 'applicant', None)
         return owner == request.user
+
+class IsjobRecruiter(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        if request.user.is_superuser:
+            return True
+        if request.method == 'DELETE':
+            return obj.applicant ==request.user
+
+        return obj.job.recruiter == request.user
