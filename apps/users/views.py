@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializer import skillserializer,userprofileserializer
+from .serializer import skillserializer,userprofileserializer,RegisterSerializer
 from .models import Skill,Userprofile
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
@@ -10,6 +10,10 @@ from .permissons import IsOwnerOrReadOnly
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAdminUser,IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import ValidationError
+from rest_framework.views import APIView 
+from rest_framework.response import Response
+from rest_framework import status
+
 # Create your views here.
 class UserViewset(viewsets.ModelViewSet):
     queryset = Userprofile.objects.all()
@@ -34,3 +38,18 @@ class SkillViewset(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
         return [IsAuthenticatedOrReadOnly()]
+
+class RegisterViewset(APIView):
+    def post(self,request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(
+                {"message": "User created successfully."},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    permission_classes = []
+    authentication_classes =[]
+
+    
