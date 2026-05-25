@@ -1,4 +1,4 @@
-DevCollab — Developer Collaboration Platform
+\# DevCollab — Developer Collaboration Platform
 
 
 
@@ -6,13 +6,13 @@ A production-ready REST API built with Django REST Framework, featuring JWT auth
 
 
 
-Tech Stack
+\## Tech Stack
 
 Python | Django | Django REST Framework | PostgreSQL | JWT | Git
 
 
 
-Key Features
+\## Key Features
 
 \- JWT Authentication — register, login, token refresh
 
@@ -28,7 +28,9 @@ Key Features
 
 
 
-Setup
+\## Setup
+
+```bash
 
 git clone https://github.com/kavy123-coder/DevCollab.git
 
@@ -42,9 +44,11 @@ python manage.py seed\_data
 
 python manage.py runserver
 
+```
 
 
-&#x20;API Endpoints
+
+\## API Endpoints
 
 | Method | Endpoint | Description |
 
