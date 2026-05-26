@@ -7,7 +7,7 @@ class Jobs(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(max_length=100)
     skill_required = models.ManyToManyField(Skill)
-    location = models.CharField()
+    location = models.CharField(max_length=100)
     is_remote = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -19,7 +19,7 @@ class Application(models.Model):
     applicant = models.ForeignKey(User,on_delete=models.CASCADE)
     cover_letter = models.TextField(max_length=200,blank=True)
     resume = models.FileField(upload_to='resumes/',blank=True)
-    status =  models.CharField(choices=[('Pending','Pending'),('Accepted','Accepted'),('Rejected','Rejected')],default='Pending')
+    status =  models.CharField(choices=[('Pending','Pending'),('Accepted','Accepted'),('Rejected','Rejected')],default='Pending',max_length=20)
     applied_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

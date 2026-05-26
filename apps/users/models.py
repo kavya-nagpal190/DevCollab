@@ -10,7 +10,7 @@ class Skill(models.Model):
         return self.name
 class Userprofile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    role = models.CharField(choices=[('Developer','Developer'),('Recruiter','Recruiter'),('Admin','Admin')])
+    role = models.CharField(choices=[('Developer','Developer'),('Recruiter','Recruiter'),('Admin','Admin')],max_length=20)
     bio = models.TextField(blank=True)
     skills = models.ManyToManyField(Skill,blank=True)
     github_url = models.URLField(blank=True)
